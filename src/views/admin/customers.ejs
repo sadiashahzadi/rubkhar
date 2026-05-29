@@ -1,0 +1,100 @@
+<%- include('partials/header') %>
+
+<% if (view_id && customer) { %>
+
+    <div style="display:flex; justify-content:space-between; margin-bottom: 20px;">
+        <h3 class="section-title" style="margin:0; border:none;">Customer Details</h3>
+        <a href="/admin/customers" class="btn" style="background:#eee; color:#333;"><i class="fas fa-arrow-left"></i> Back to Customers</a>
+    </div>
+
+    <div style="display:grid; grid-template-columns:1fr 2fr; gap:25px;">
+
+        <!-- Profile Info -->
+        <div class="card" style="align-self: flex-start;">
+            <div style="text-align:center; padding-bottom: 20px; border-bottom: 1px solid #eee; margin-bottom: 20px;">
+                <div style="width: 80px; height: 80px; background: var(--maroon); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; font-family: var(--font-heading); margin: 0 auto 15px;">
+                    <%= customer.name.charAt(0).toUpperCase() %>
+                </div>
+                <h3 style="margin:0; color:var(--maroon); font-family:var(--font-heading);"><%= customer.name %></h3>
+                <p style="color:#777; margin:5px 0 0 0;">Customer ID: #<%= customer.id %></p>
+            </div>
+            <p><strong><i class="fas fa-envelope"></i> Email:</strong> <br><%= customer.email %></p>
+            <% if (customer.phone) { %>
+            <p><strong><i class="fas fa-phone-alt"></i> Phone:</strong> <br><%= customer.phone %></p>
+            <% } %>
+            <p><strong><i class="fas fa-calendar-alt"></i> Joined:</strong> <br><%= new Date(customer.created_at || Date.now()).toLocaleDateString('en-GB', {day:'2-digit',month:'short',year:'numeric'}) %></p>
+        </div>
+
+        <!-- Order History -->
+        <div class="card">
+            <h3 class="section-title" style="margin-top:0;">Order History</h3>
+            <div class="table-responsive">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Date</th>
+                            <th>Total Amount</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% orders.forEach(function(o) { %>
+                        <tr>
+                            <td><a href="/admin/orders?view=<%= o.id %>" style="color:var(--maroon); font-weight:bold; text-decoration:none;">#<%= String(o.id).padStart(6, '0') %></a></td>
+                            <td><%= new Date(o.created_at).toLocaleDateString('en-GB', {day:'2-digit',month:'short',year:'numeric'}) %></td>
+                            <td>Rs. <%= money(o.total_amount) %></td>
+                            <td><span class="badge badge-<%= o.status.toLowerCase() %>"><%= o.status.charAt(0).toUpperCase() + o.status.slice(1) %></span></td>
+                        </tr>
+                        <% }) %>
+                        <% if (orders.length === 0) { %>
+                        <tr><td colspan="4" style="text-align:center;">This customer has not placed any orders yet.</td></tr>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+<% } else { %>
+
+    <h3 class="section-title">Customers Database</h3>
+    <div class="card">
+        <div class="table-responsive">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Customer ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th style="text-align:center;">Total Orders</th>
+                        <th style="text-align:right;">Total Spent</th>
+                        <th style="text-align:center;">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% customers.forEach(function(c) { %>
+                    <tr>
+                        <td>#<%= c.id %></td>
+                        <td style="font-weight: 500; color: var(--maroon);"><%= c.name %></td>
+                        <td><%= c.email %></td>
+                        <td><%= c.phone || '-' %></td>
+                        <td style="text-align:center;"><span class="badge" style="background:#eee; color:#333;"><%= c.total_orders %></span></td>
+                        <td style="text-align:right; font-weight:600; color:var(--gold);">Rs. <%= money(c.total_spent || 0) %></td>
+                        <td style="text-align:center;">
+                            <a href="/admin/customers?view=<%= c.id %>" class="btn btn-sm btn-gold"><i class="fas fa-eye"></i> View</a>
+                        </td>
+                    </tr>
+                    <% }) %>
+                    <% if (customers.length === 0) { %>
+                        <tr><td colspan="7" style="text-align:center;">No customers found.</td></tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+<% } %>
+
+<%- include('partials/footer') %>

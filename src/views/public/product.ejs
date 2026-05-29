@@ -1,0 +1,690 @@
+<%- include('../partials/header') %>
+<style>
+/* Product Page CSS */
+.product-page-container {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+/* Breadcrumb */
+.breadcrumb {
+    color: #888;
+    font-size: 0.95rem;
+    margin-bottom: 40px;
+}
+.breadcrumb a {
+    color: var(--maroon);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+.breadcrumb a:hover {
+    color: var(--gold);
+    text-decoration: underline;
+}
+
+/* Product Main Section */
+.product-main {
+    display: flex;
+    gap: 60px;
+    margin-bottom: 80px;
+}
+
+/* Left: Image Gallery */
+.product-gallery {
+    flex: 1;
+    min-width: 0; /* flexbox fix */
+}
+.main-image {
+    width: 100%;
+    height: 550px;
+    background-color: #f5f5f5;
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+.main-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: opacity 0.3s;
+}
+.thumbnail-row {
+    display: flex;
+    gap: 15px;
+}
+.thumbnail {
+    flex: 1;
+    height: 110px;
+    background-color: #f5f5f5;
+    border-radius: 6px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    transition: all 0.3s;
+}
+.thumbnail:hover {
+    opacity: 0.8;
+}
+.thumbnail.active {
+    border-color: var(--gold);
+}
+.thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Right: Product Details */
+.product-details {
+    flex: 1;
+}
+.product-category {
+    color: var(--gold);
+    text-transform: uppercase;
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin-bottom: 12px;
+    letter-spacing: 1px;
+}
+.product-title {
+    font-family: var(--font-heading);
+    color: var(--maroon);
+    font-size: 2.5rem;
+    margin-bottom: 15px;
+    line-height: 1.2;
+}
+.product-rating {
+    color: var(--gold);
+    margin-bottom: 25px;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+}
+.product-rating span {
+    color: #777;
+    margin-left: 10px;
+    font-size: 0.9rem;
+}
+.price-box {
+    margin-bottom: 30px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+.current-price {
+    font-size: 2rem;
+    color: var(--maroon);
+    font-weight: 600;
+}
+.original-price {
+    font-size: 1.3rem;
+    color: #999;
+    text-decoration: line-through;
+}
+.save-badge {
+    background: #e51e25;
+    color: white;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+/* Variants */
+.variant-group {
+    margin-bottom: 30px;
+}
+.variant-title {
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: #333;
+    font-size: 1.05rem;
+}
+.size-buttons {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+.size-btn {
+    padding: 10px 18px;
+    border: 1px solid #ddd;
+    background: white;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    transition: all 0.3s;
+    min-width: 50px;
+}
+.size-btn:hover {
+    border-color: var(--maroon);
+    color: var(--maroon);
+}
+.size-btn.active {
+    border-color: var(--maroon);
+    background: var(--maroon);
+    color: white;
+}
+.color-circles {
+    display: flex;
+    gap: 15px;
+}
+.color-circle {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: transform 0.2s;
+}
+.color-circle:hover {
+    transform: scale(1.1);
+}
+.color-circle.active {
+    box-shadow: 0 0 0 2px white, 0 0 0 4px var(--gold);
+}
+
+/* Actions */
+.action-group {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 40px;
+    align-items: stretch;
+}
+.quantity-selector {
+    display: flex;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    overflow: hidden;
+    width: 130px;
+}
+.quantity-selector button {
+    width: 40px;
+    background: #f9f9f9;
+    border: none;
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: background 0.2s;
+}
+.quantity-selector button:hover {
+    background: #eee;
+}
+.quantity-selector input {
+    width: 50px;
+    text-align: center;
+    border: none;
+    border-left: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+    font-family: var(--font-body);
+    font-size: 1rem;
+    outline: none;
+}
+.btn-add-cart {
+    flex: 2;
+    background: var(--maroon);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    text-transform: uppercase;
+    font-size: 1rem;
+    letter-spacing: 0.5px;
+    transition: background 0.3s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+.btn-add-cart:hover { background: #6a1338; }
+.btn-buy-now {
+    flex: 2;
+    background: var(--gold);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    text-transform: uppercase;
+    font-size: 1rem;
+    letter-spacing: 0.5px;
+    transition: background 0.3s;
+}
+.btn-buy-now:hover { background: #b58532; }
+.btn-wishlist {
+    width: 55px;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    color: #777;
+    cursor: pointer;
+    font-size: 1.3rem;
+    transition: all 0.3s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.btn-wishlist:hover {
+    color: var(--maroon);
+    border-color: var(--maroon);
+}
+
+/* Delivery Info */
+.delivery-box {
+    border: 1px solid #eee;
+    padding: 25px;
+    border-radius: 8px;
+    background: #fdfdfd;
+}
+.delivery-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+.delivery-item:last-child { margin-bottom: 0; }
+.delivery-item i {
+    font-size: 1.6rem;
+    color: var(--gold);
+    width: 35px;
+    text-align: center;
+    margin-top: 3px;
+}
+.delivery-text h5 {
+    color: #333;
+    margin-bottom: 5px;
+    font-size: 1.05rem;
+}
+.delivery-text p {
+    color: #777;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+/* Tabs Section */
+.tabs-container {
+    margin-bottom: 80px;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    overflow: hidden;
+}
+.tabs-header {
+    display: flex;
+    background: #fdfdfd;
+    border-bottom: 1px solid #eee;
+}
+.tab-btn {
+    padding: 18px 35px;
+    background: transparent;
+    border: none;
+    font-family: var(--font-heading);
+    font-size: 1.2rem;
+    cursor: pointer;
+    color: #777;
+    transition: all 0.3s;
+}
+.tab-btn:hover {
+    background: #f5f5f5;
+}
+.tab-btn.active {
+    color: var(--maroon);
+    background: white;
+    border-top: 3px solid var(--maroon);
+}
+.tab-content {
+    display: none;
+    padding: 40px;
+    line-height: 1.8;
+    color: #555;
+    font-size: 1.05rem;
+}
+.tab-content.active {
+    display: block;
+    animation: fadeIn 0.5s;
+}
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Related Products */
+.related-section h2 {
+    font-family: var(--font-heading);
+    color: var(--maroon);
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 40px;
+}
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 25px;
+}
+.product-card {
+    background: var(--white);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    transition: transform 0.3s;
+    text-align: center;
+    padding-bottom: 20px;
+    border: 1px solid #eee;
+}
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+}
+.product-img-small {
+    height: 250px;
+    background-color: #f9f9f9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.product-name-small {
+    font-family: var(--font-heading);
+    color: var(--maroon);
+    font-size: 1.2rem;
+    margin: 20px 0 10px;
+}
+.product-price-small {
+    color: var(--gold);
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+@media (max-width: 992px) {
+    .product-main { flex-direction: column; }
+    .product-grid { grid-template-columns: repeat(2, 1fr); }
+    .action-group { flex-wrap: wrap; }
+    .btn-add-cart, .btn-buy-now { flex: 1 1 100%; margin-top: 10px; }
+}
+@media (max-width: 600px) {
+    .tabs-header { flex-direction: column; }
+    .tab-btn { border-left: none; border-bottom: 1px solid #eee; text-align: left; padding: 15px 20px; }
+    .tab-btn.active { border-top: none; border-left: 3px solid var(--maroon); }
+}
+</style>
+
+<main class="product-page-container">
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+        <a href="/">Home</a> /
+        <a href="/shop">Shop</a> /
+        <a href="/shop?category=<%= product.category_id %>"><%= product.category_name %></a> /
+        <%= product.name %>
+    </div>
+
+    <!-- Product Main -->
+    <div class="product-main">
+        <!-- Left: Gallery -->
+        <div class="product-gallery">
+            <div class="main-image">
+                <img src="https://via.placeholder.com/800x800?text=<%= encodeURIComponent(product.name) %>" id="mainImage" alt="<%= product.name %>">
+            </div>
+            <div class="thumbnail-row">
+                <div class="thumbnail active" onclick="changeImage(this, 'https://via.placeholder.com/800x800?text=<%= encodeURIComponent(product.name) %>')">
+                    <img src="https://via.placeholder.com/200x200?text=Thumb+1" alt="Thumb 1">
+                </div>
+                <div class="thumbnail" onclick="changeImage(this, 'https://via.placeholder.com/800x800?text=Gallery+View+2')">
+                    <img src="https://via.placeholder.com/200x200?text=Thumb+2" alt="Thumb 2">
+                </div>
+                <div class="thumbnail" onclick="changeImage(this, 'https://via.placeholder.com/800x800?text=Gallery+View+3')">
+                    <img src="https://via.placeholder.com/200x200?text=Thumb+3" alt="Thumb 3">
+                </div>
+                <div class="thumbnail" onclick="changeImage(this, 'https://via.placeholder.com/800x800?text=Gallery+View+4')">
+                    <img src="https://via.placeholder.com/200x200?text=Thumb+4" alt="Thumb 4">
+                </div>
+            </div>
+        </div>
+
+        <!-- Right: Details -->
+        <div class="product-details">
+            <div class="product-category"><%= product.category_name %></div>
+            <h1 class="product-title"><%= product.name %></h1>
+
+            <div class="product-rating">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star-half-alt"></i>
+                <span>(24 Reviews)</span>
+            </div>
+
+            <div class="price-box">
+                <div class="current-price">Rs. <%= money(product.price) %></div>
+                <div class="original-price">Rs. <%= money(original_price) %></div>
+                <div class="save-badge">Save 20%</div>
+            </div>
+
+            <div class="variant-group">
+                <div class="variant-title">Size</div>
+                <div class="size-buttons">
+                    <button class="size-btn">XS</button>
+                    <button class="size-btn">S</button>
+                    <button class="size-btn active">M</button>
+                    <button class="size-btn">L</button>
+                    <button class="size-btn">XL</button>
+                    <button class="size-btn">XXL</button>
+                </div>
+            </div>
+
+            <div class="variant-group">
+                <div class="variant-title">Color</div>
+                <div class="color-circles">
+                    <div class="color-circle active" style="background-color: var(--maroon);"></div>
+                    <div class="color-circle" style="background-color: black;"></div>
+                    <div class="color-circle" style="background-color: #f9f9f9; border: 1px solid #ddd;"></div>
+                </div>
+            </div>
+
+            <div class="action-group">
+                <div class="quantity-selector">
+                    <button type="button" onclick="updateQty(-1)">-</button>
+                    <input type="number" id="qtyInput" value="1" min="1" max="<%= product.stock %>">
+                    <button type="button" onclick="updateQty(1)">+</button>
+                </div>
+                <button class="btn-add-cart"><i class="fas fa-shopping-cart"></i> Add to Cart</button>
+                <button class="btn-buy-now">Buy Now</button>
+                <button class="btn-wishlist"><i class="far fa-heart"></i></button>
+            </div>
+
+            <div class="delivery-box">
+                <div class="delivery-item">
+                    <i class="fas fa-truck"></i>
+                    <div class="delivery-text">
+                        <h5>Standard Delivery</h5>
+                        <p>2-4 business days across Pakistan via premium courier.</p>
+                    </div>
+                </div>
+                <div class="delivery-item">
+                    <i class="fas fa-undo"></i>
+                    <div class="delivery-text">
+                        <h5>7 Days Return</h5>
+                        <p>Not satisfied? Return it within 7 days easily with our hassle-free policy.</p>
+                    </div>
+                </div>
+                <div class="delivery-item">
+                    <i class="fas fa-money-bill-wave"></i>
+                    <div class="delivery-text">
+                        <h5>Cash on Delivery Available</h5>
+                        <p>Pay conveniently when the package arrives at your doorstep.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabs Section -->
+    <div class="tabs-container">
+        <div class="tabs-header">
+            <button class="tab-btn active" onclick="openTab(event, 'description')">Description</button>
+            <button class="tab-btn" onclick="openTab(event, 'size-guide')">Size Guide</button>
+            <button class="tab-btn" onclick="openTab(event, 'reviews')">Reviews (24)</button>
+        </div>
+
+        <div id="description" class="tab-content active">
+            <p><%- product.description ? escape(product.description).replace(/\n/g, '<br>') : '' %></p>
+            <br>
+            <h4 style="color: var(--maroon); font-family: var(--font-heading); font-size: 1.5rem; margin: 20px 0 10px;">Product Highlights</h4>
+            <ul style="margin-left: 20px; list-style-type: square; color: #666;">
+                <li style="margin-bottom: 8px;">Premium quality material for maximum comfort.</li>
+                <li style="margin-bottom: 8px;">Elegant and timeless design suitable for all occasions.</li>
+                <li style="margin-bottom: 8px;">Exquisitely crafted with attention to detail.</li>
+                <li style="margin-bottom: 8px;">100% authentic Rubkhar signature product.</li>
+            </ul>
+        </div>
+
+        <div id="size-guide" class="tab-content">
+            <h4 style="color: var(--maroon); font-family: var(--font-heading); font-size: 1.5rem; margin-bottom: 10px;">How to Measure</h4>
+            <p>Use a measuring tape to find your perfect size. All measurements are in inches. If you are between sizes, we recommend sizing up.</p>
+            <table style="width: 100%; border-collapse: collapse; margin-top: 25px; text-align: left;">
+                <tr style="border-bottom: 2px solid var(--maroon); background: #fdf0f5; color: var(--maroon);">
+                    <th style="padding: 15px;">Size</th>
+                    <th style="padding: 15px;">Chest</th>
+                    <th style="padding: 15px;">Waist</th>
+                    <th style="padding: 15px;">Length</th>
+                </tr>
+                <tr style="border-bottom: 1px solid #eee;">
+                    <td style="padding: 15px; font-weight: 600;">S</td>
+                    <td style="padding: 15px;">36</td>
+                    <td style="padding: 15px;">32</td>
+                    <td style="padding: 15px;">40</td>
+                </tr>
+                <tr style="border-bottom: 1px solid #eee; background: #fafafa;">
+                    <td style="padding: 15px; font-weight: 600;">M</td>
+                    <td style="padding: 15px;">38</td>
+                    <td style="padding: 15px;">34</td>
+                    <td style="padding: 15px;">40</td>
+                </tr>
+                <tr style="border-bottom: 1px solid #eee;">
+                    <td style="padding: 15px; font-weight: 600;">L</td>
+                    <td style="padding: 15px;">40</td>
+                    <td style="padding: 15px;">36</td>
+                    <td style="padding: 15px;">41</td>
+                </tr>
+                <tr style="border-bottom: 1px solid #eee; background: #fafafa;">
+                    <td style="padding: 15px; font-weight: 600;">XL</td>
+                    <td style="padding: 15px;">42</td>
+                    <td style="padding: 15px;">38</td>
+                    <td style="padding: 15px;">41</td>
+                </tr>
+            </table>
+        </div>
+
+        <div id="reviews" class="tab-content">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+                <h4 style="color: var(--maroon); font-family: var(--font-heading); font-size: 1.5rem; margin: 0;">Customer Reviews</h4>
+                <button style="background: transparent; border: 2px solid var(--maroon); color: var(--maroon); padding: 10px 20px; border-radius: 4px; cursor: pointer; font-weight: 600; transition: all 0.3s;" onmouseover="this.style.background='var(--maroon)'; this.style.color='white';" onmouseout="this.style.background='transparent'; this.style.color='var(--maroon)';">Write a Review</button>
+            </div>
+
+            <div style="border-bottom: 1px solid #eee; padding-bottom: 25px; margin-bottom: 25px;">
+                <div style="color: var(--gold); margin-bottom: 10px; font-size: 1.1rem;">
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                </div>
+                <strong style="color: #333; font-size: 1.1rem;">Fatima A.</strong> <span style="color: #999; font-size: 0.9rem; margin-left: 10px;">Verified Buyer</span>
+                <p style="margin-top: 10px;">Absolutely love the quality! It looks exactly like the pictures and the fit is perfect. Highly recommended for anyone looking for elegant evening wear.</p>
+            </div>
+            <div style="border-bottom: 1px solid #eee; padding-bottom: 25px; margin-bottom: 25px;">
+                <div style="color: var(--gold); margin-bottom: 10px; font-size: 1.1rem;">
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
+                </div>
+                <strong style="color: #333; font-size: 1.1rem;">Aisha K.</strong> <span style="color: #999; font-size: 0.9rem; margin-left: 10px;">Verified Buyer</span>
+                <p style="margin-top: 10px;">Beautiful design and very comfortable. Delivery was fast too, arrived in just 2 days in Lahore.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Related Products -->
+    <% if (related_products.length > 0) { %>
+    <section class="related-section">
+        <h2>You May Also Like</h2>
+        <div class="product-grid">
+            <% related_products.forEach(function(rp) { %>
+                <a href="/product?id=<%= rp.id %>" style="text-decoration: none; color: inherit;">
+                    <div class="product-card">
+                        <div class="product-img-small">
+                            <i class="fas fa-image" style="font-size: 4rem; color: #ddd;"></i>
+                        </div>
+                        <div class="product-name-small" title="<%= rp.name %>"><%= rp.name %></div>
+                        <div class="product-price-small">Rs. <%= money(rp.price) %></div>
+                    </div>
+                </a>
+            <% }) %>
+        </div>
+    </section>
+    <% } %>
+
+</main>
+
+<script>
+// Image Gallery Script
+function changeImage(element, src) {
+    document.getElementById('mainImage').src = src;
+
+    // Fade effect
+    const mainImg = document.getElementById('mainImage');
+    mainImg.style.opacity = 0.5;
+    setTimeout(() => { mainImg.style.opacity = 1; }, 100);
+
+    // Update active state
+    document.querySelectorAll('.thumbnail').forEach(t => t.classList.remove('active'));
+    element.classList.add('active');
+}
+
+// Quantity Script
+function updateQty(change) {
+    const input = document.getElementById('qtyInput');
+    let val = parseInt(input.value) + change;
+    const max = parseInt(input.max) || 10;
+
+    if (val < 1) val = 1;
+    if (val > max) val = max;
+
+    input.value = val;
+}
+
+// Tabs Script
+function openTab(evt, tabName) {
+    var i, tabcontent, tablinks;
+
+    tabcontent = document.getElementsByClassName("tab-content");
+    for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].classList.remove("active");
+    }
+
+    tablinks = document.getElementsByClassName("tab-btn");
+    for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].classList.remove("active");
+    }
+
+    document.getElementById(tabName).classList.add("active");
+    evt.currentTarget.classList.add("active");
+}
+
+// Visual toggles for sizes and colors
+document.querySelectorAll('.size-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+        document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+        e.target.classList.add('active');
+    });
+});
+
+document.querySelectorAll('.color-circle').forEach(circle => {
+    circle.addEventListener('click', (e) => {
+        document.querySelectorAll('.color-circle').forEach(c => c.classList.remove('active'));
+        e.target.classList.add('active');
+    });
+});
+</script>
+
+<%- include('../partials/footer') %>

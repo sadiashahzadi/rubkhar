@@ -1,0 +1,112 @@
+<%- include('partials/header') %>
+
+<% if (action === 'list') { %>
+
+    <div style="display:flex; justify-content:space-between; margin-bottom: 20px;">
+        <h3 class="section-title" style="margin:0; border:none;">Manage Discount Coupons</h3>
+        <a href="/admin/coupons?action=add" class="btn btn-primary"><i class="fas fa-plus"></i> Create New Coupon</a>
+    </div>
+
+    <% if (success) { %>
+        <div style="background:#e8f8f5; color:#2ecc71; padding:15px; border-radius:4px; margin-bottom:20px; border:1px solid #a3e4d7;">
+            <i class="fas fa-check-circle"></i> <%= success %>
+        </div>
+    <% } %>
+
+    <div class="card">
+        <div class="table-responsive">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Coupon Code</th>
+                        <th>Discount Value</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% coupons.forEach(function(c) { %>
+                    <tr>
+                        <td><span style="background:var(--light-pink); color:var(--maroon); padding:6px 15px; border-radius:4px; font-weight:bold; letter-spacing:1px; border:1px dashed var(--maroon);"><%= c.code %></span></td>
+                        <td>
+                            <% if (c.discount_type === 'percentage') { %>
+                                <%= parseFloat(c.discount_value) %>% OFF
+                            <% } else { %>
+                                Rs. <%= money(c.discount_value) %> OFF
+                            <% } %>
+                        </td>
+                        <td>
+                            <% if (c.is_active) { %>
+                                <span class="badge badge-delivered"><i class="fas fa-check"></i> Active</span>
+                            <% } else { %>
+                                <span class="badge badge-cancelled"><i class="fas fa-times"></i> Disabled</span>
+                            <% } %>
+                        </td>
+                        <td>
+                            <a href="/admin/coupons?action=edit&id=<%= c.id %>" class="btn btn-sm btn-gold" title="Edit"><i class="fas fa-edit"></i></a>
+                            <form method="POST" action="/admin/coupons/delete" onsubmit="return confirm('Delete this coupon permanently?');" style="display:inline;">
+                                <input type="hidden" name="id" value="<%= c.id %>">
+                                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                                <button type="submit" class="btn btn-sm btn-danger" title="Delete"><i class="fas fa-trash"></i></button>
+                            </form>
+                        </td>
+                    </tr>
+                    <% }) %>
+                    <% if (coupons.length === 0) { %>
+                        <tr><td colspan="4" style="text-align:center;">No coupons created yet.</td></tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+<% } else if (action === 'add' || action === 'edit') { %>
+
+    <div class="card" style="max-width: 500px;">
+        <h3 class="section-title"><%= action === 'add' ? 'Create Discount Coupon' : 'Edit Coupon' %></h3>
+
+        <% if (error) { %>
+            <div style="background:#fff0f0; color:#e74c3c; padding:15px; border-radius:4px; margin-bottom:20px; border:1px solid #ffcccc;">
+                <i class="fas fa-exclamation-circle"></i> <%= error %>
+            </div>
+        <% } %>
+
+        <form method="POST" action="/admin/coupons/<%= action %>">
+            <input type="hidden" name="coupon_id" value="<%= coupon ? coupon.id : '' %>">
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+            <div class="form-group" style="margin-bottom: 20px;">
+                <label class="form-label">Coupon Code *</label>
+                <input type="text" name="code" class="form-control" required placeholder="e.g. SUMMER20" value="<%= coupon ? coupon.code : '' %>" style="text-transform: uppercase;">
+                <small style="color:#777;">Customers will enter this code at checkout.</small>
+            </div>
+
+            <div style="display:flex; gap:20px; margin-bottom: 20px;">
+                <div style="flex:1;">
+                    <label class="form-label">Discount Type *</label>
+                    <select name="discount_type" class="form-control" required>
+                        <option value="fixed" <%= (coupon && coupon.discount_type === 'fixed') ? 'selected' : '' %>>Fixed Amount (Rs)</option>
+                        <option value="percentage" <%= (coupon && coupon.discount_type === 'percentage') ? 'selected' : '' %>>Percentage (%)</option>
+                    </select>
+                </div>
+                <div style="flex:1;">
+                    <label class="form-label">Discount Value *</label>
+                    <input type="number" step="0.01" name="discount_value" class="form-control" required value="<%= coupon ? coupon.discount_value : '' %>">
+                </div>
+            </div>
+
+            <div style="margin-top: 15px; display:flex; align-items:center; gap:10px; background:#fdfdfd; padding:15px; border:1px solid #eee; border-radius:4px;">
+                <input type="checkbox" name="is_active" id="is_active" <%= (!coupon || coupon.is_active) ? 'checked' : '' %> style="width:20px;height:20px;accent-color:var(--maroon);">
+                <label for="is_active" style="font-weight:500; cursor:pointer; color:#333; margin:0;">Enable Coupon Code</label>
+            </div>
+
+            <div style="margin-top: 30px; border-top:1px solid #eee; padding-top:20px;">
+                <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Save Coupon</button>
+                <a href="/admin/coupons" class="btn" style="background:#eee; color:#333; margin-left:10px;">Cancel</a>
+            </div>
+        </form>
+    </div>
+
+<% } %>
+
+<%- include('partials/footer') %>
