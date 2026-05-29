@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rubkhar - Elegant Women's Fashion</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Poppins:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome (for icons) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Global CSS -->
+    <link rel="stylesheet" href="/assets/css/style.css">
+    
+    <style>
+        
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        /* Top Bar */
+        .top-bar {
+            background-color: var(--maroon);
+            color: var(--white);
+            padding: 8px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9rem;
+        }
+        
+        .top-bar .whatsapp-number i {
+            color: #25D366; /* WhatsApp brand color */
+            margin-right: 5px;
+        }
+        
+        /* Header Main */
+        .header-main {
+            background-color: var(--white);
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .logo-text {
+            font-family: var(--font-heading);
+            font-size: 2.5rem;
+            color: var(--maroon);
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+        
+        .search-container {
+            flex: 1;
+            max-width: 500px;
+            margin: 0 40px;
+            display: flex;
+        }
+        
+        .search-container input {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid #ccc;
+            border-right: none;
+            border-radius: 4px 0 0 4px;
+            font-family: var(--font-body);
+            outline: none;
+        }
+        
+        .search-container input:focus {
+            border-color: var(--gold);
+        }
+        
+        .search-container button {
+            padding: 10px 20px;
+            background-color: var(--gold);
+            color: var(--white);
+            border: none;
+            border-radius: 0 4px 4px 0;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .search-container button:hover {
+            background-color: #b58532;
+        }
+        
+        .header-icons {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .header-icons a {
+            color: var(--maroon);
+            font-size: 1.3rem;
+            position: relative;
+            transition: color 0.3s;
+        }
+        
+        .header-icons a:hover {
+            color: var(--gold);
+        }
+        
+        /* Navigation */
+        .main-nav {
+            background-color: var(--white);
+            padding: 15px 40px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        
+        .nav-list {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            list-style: none;
+        }
+        
+        .nav-list a {
+            color: #333;
+            font-weight: 500;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            transition: color 0.3s;
+        }
+        
+        .nav-list a:hover {
+            color: var(--gold);
+        }
+        
+        .mobile-menu-btn {
+            display: none;
+            font-size: 1.5rem;
+            color: var(--maroon);
+            cursor: pointer;
+            border: none;
+            background: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .search-container {
+                display: none; /* Hide on small screens */
+            }
+            .nav-list {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: var(--white);
+                padding: 20px;
+                box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+                z-index: 10;
+            }
+            .nav-list li {
+                margin-bottom: 15px;
+            }
+            .main-nav {
+                position: relative;
+            }
+            .mobile-menu-btn {
+                display: block;
+            }
+            .header-main {
+                padding: 15px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top Bar -->
+    <div class="top-bar">
+        <div class="delivery-info">
+            <i class="fas fa-truck"></i> Free Delivery Above Rs. 2000
+        </div>
+        <div class="whatsapp-number">
+            <i class="fab fa-whatsapp"></i> 03450474651
+        </div>
+    </div>
+
+    <!-- Header Main -->
+    <header class="header-main">
+        <button class="mobile-menu-btn">
+            <i class="fas fa-bars"></i>
+        </button>
+        
+        <div class="logo">
+            <a href="/" class="logo-text">Rubkhar</a>
+        </div>
+        
+        <div class="search-container">
+            <input type="text" placeholder="Search for products, brands and more...">
+            <button type="submit"><i class="fas fa-search"></i></button>
+        </div>
+        
+        <div class="header-icons">
+            <a href="/login.php" title="Login / Register"><i class="far fa-user"></i></a>
+            <a href="/wishlist.php" title="Wishlist"><i class="far fa-heart"></i></a>
+            <a href="/cart.php" title="Cart"><i class="fas fa-shopping-cart"></i></a>
+        </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="main-nav">
+        <ul class="nav-list">
+            <li><a href="/">Home</a></li>
+            <li><a href="/category.php?slug=womens-clothing">Women Clothing</a></li>
+            <li><a href="/category.php?slug=jewelry">Jewelry</a></li>
+            <li><a href="/category.php?slug=abayas">Abayas</a></li>
+            <li><a href="/category.php?slug=gift-items">Gift Items</a></li>
+            <li><a href="/sale.php" style="color: var(--maroon); font-weight: 600;">Sale</a></li>
+            <li><a href="/new-arrivals.php">New Arrivals</a></li>
+        </ul>
+    </nav>
