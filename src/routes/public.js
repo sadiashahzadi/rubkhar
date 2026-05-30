@@ -27,6 +27,11 @@ router.get('/shop', wrap(async (req, res) => {
   res.render('public/shop', { categories });
 }));
 
+// Legacy PHP route redirects for the frontend
+['/category.php', '/sale.php', '/new-arrivals.php', '/wishlist.php', '/about.php', '/contact.php', '/faq.php', '/shipping-policy.php', '/return-policy.php', '/privacy-policy.php'].forEach(path => {
+  router.get(path, (req, res) => res.redirect('/shop'));
+});
+
 // ── GET /product ──────────────────────────────────────────────────────────────
 // PHP used ?id= param
 router.get('/product', wrap(async (req, res) => {

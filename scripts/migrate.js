@@ -23,17 +23,27 @@ if (!DATABASE_URL) {
 const schemaPath = path.join(__dirname, '..', 'db', 'schema.sql');
 const seedPath = path.join(__dirname, '..', 'db', 'seed.sql');
 
+function isLocalDatabase(urlString) {
+  try {
+    const dbUrl = new URL(urlString);
+    return dbUrl.hostname === '127.0.0.1' || dbUrl.hostname === 'localhost';
+  } catch {
+    return false;
+  }
+}
+
 async function runFile(connection, filePath) {
   const fileName = path.basename(filePath);
   console.log(`\nRunning ${fileName}...`);
 
   const sql = fs.readFileSync(filePath, 'utf8');
 
-  // Split on semicolons, filter empty statements
-  const statements = sql
+  // Remove SQL comments before splitting into statements.
+  const cleanedSql = sql.replace(/--.*(\r?\n|$)/g, '\n');
+  const statements = cleanedSql
     .split(';')
     .map((s) => s.trim())
-    .filter((s) => s.length > 0 && !s.startsWith('--'));
+    .filter((s) => s.length > 0);
 
   for (let i = 0; i < statements.length; i++) {
     const stmt = statements[i];
@@ -55,14 +65,19 @@ async function runFile(connection, filePath) {
 async function main() {
   console.log('Connecting to database...');
 
-  const connection = await mysql.createConnection({
+  const connectionOptions = {
     uri: DATABASE_URL,
     multipleStatements: true,
-    ssl: {
+  };
+
+  if (!isLocalDatabase(DATABASE_URL)) {
+    connectionOptions.ssl = {
       minVersion: 'TLSv1.2',
       rejectUnauthorized: true,
-    },
-  });
+    };
+  }
+
+  const connection = await mysql.createConnection(connectionOptions);
 
   console.log('Connected.');
 
